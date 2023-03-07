@@ -1,10 +1,10 @@
 use crate::unicode::ToUnicode;
 
 use enum_iterator::Sequence;
-use std::fmt::Display;
+use std::fmt::{Debug, Display, Formatter, Result};
 
 #[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Sequence)]
-pub enum Rank {
+pub(crate) enum Rank {
     Two,
     Three,
     Four,
@@ -21,7 +21,7 @@ pub enum Rank {
 }
 
 impl Display for Rank {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self {
             Self::Two => write!(f, "\u{2461} "),
             Self::Three => write!(f, "\u{2462} "),
@@ -57,5 +57,43 @@ impl ToUnicode for Rank {
             Self::King => 0xE,
             Self::Ace => 1,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_display() {
+        assert_eq!("② ", Rank::Two.to_string());
+        assert_eq!("③ ", Rank::Three.to_string());
+        assert_eq!("④ ", Rank::Four.to_string());
+        assert_eq!("⑤ ", Rank::Five.to_string());
+        assert_eq!("⑥ ", Rank::Six.to_string());
+        assert_eq!("⑦ ", Rank::Seven.to_string());
+        assert_eq!("⑧ ", Rank::Eight.to_string());
+        assert_eq!("⑨ ", Rank::Nine.to_string());
+        assert_eq!("⑩ ", Rank::Ten.to_string());
+        assert_eq!("Ⓙ ", Rank::Jack.to_string());
+        assert_eq!("Ⓠ ", Rank::Queen.to_string());
+        assert_eq!("Ⓚ ", Rank::King.to_string());
+        assert_eq!("Ⓐ ", Rank::Ace.to_string());
+    }
+
+    #[test]
+    fn test_to_unicode() {
+        assert_eq!(2, Rank::Two.to_unicode());
+        assert_eq!(3, Rank::Three.to_unicode());
+        assert_eq!(4, Rank::Four.to_unicode());
+        assert_eq!(5, Rank::Five.to_unicode());
+        assert_eq!(6, Rank::Six.to_unicode());
+        assert_eq!(7, Rank::Seven.to_unicode());
+        assert_eq!(8, Rank::Eight.to_unicode());
+        assert_eq!(9, Rank::Nine.to_unicode());
+        assert_eq!(10, Rank::Ten.to_unicode());
+        assert_eq!(11, Rank::Jack.to_unicode());
+        assert_eq!(13, Rank::Queen.to_unicode());
+        assert_eq!(14, Rank::King.to_unicode());
+        assert_eq!(1, Rank::Ace.to_unicode());
     }
 }
