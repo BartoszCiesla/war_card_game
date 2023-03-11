@@ -3,7 +3,7 @@ use crate::unicode::ToUnicode;
 use enum_iterator::Sequence;
 use std::fmt::{Debug, Display, Formatter, Result};
 
-#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Sequence)]
+#[derive(Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Sequence)]
 pub(crate) enum Rank {
     Two,
     Three,

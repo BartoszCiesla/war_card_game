@@ -3,7 +3,7 @@ use crate::unicode::ToUnicode;
 use enum_iterator::Sequence;
 use std::fmt::{Debug, Display, Formatter, Result};
 
-#[derive(Debug, Clone, Sequence, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Sequence, Eq, PartialEq)]
 pub(crate) enum Color {
     Clubs,
     Diamonds,
