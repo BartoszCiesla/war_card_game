@@ -57,7 +57,7 @@ impl Game {
             for hand in self.hands.iter_mut() {
                 let card = self.deck.pop();
                 match card {
-                    Some(item) => hand.hand.push(item),
+                    Some(item) => hand.add_card(item),
                     None => break,
                 }
             }

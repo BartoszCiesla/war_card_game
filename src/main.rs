@@ -1,5 +1,6 @@
 mod card;
 mod color;
+mod draw;
 mod game;
 mod player;
 mod rank;
