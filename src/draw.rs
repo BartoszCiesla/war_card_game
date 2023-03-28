@@ -20,6 +20,14 @@ impl Draw {
     }
 }
 
+impl PartialEq for Draw {
+    fn eq(&self, other: &Self) -> bool {
+        self.player_id.eq(&other.player_id) && self.card.eq(&other.card)
+    }
+}
+
+impl Eq for Draw {}
+
 #[cfg(test)]
 mod test {
     use super::*;
