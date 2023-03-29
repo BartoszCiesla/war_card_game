@@ -1,8 +1,8 @@
 mod card;
 mod color;
-mod draw;
 mod game;
 mod player;
+mod player_move;
 mod rank;
 mod unicode;
 

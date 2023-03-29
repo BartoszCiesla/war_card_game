@@ -1,5 +1,5 @@
 use crate::card::Card;
-use crate::draw::{Draw, PlayerId};
+use crate::player_move::{PlayerId, PlayerMove};
 
 use std::collections::VecDeque;
 use std::fmt::{Display, Formatter, Result};
@@ -22,9 +22,9 @@ impl Player {
         self.hand.push_back(card)
     }
 
-    pub(crate) fn get_card(&mut self) -> Option<Draw> {
+    pub(crate) fn get_card(&mut self) -> Option<PlayerMove> {
         match self.hand.pop_front() {
-            Some(card) => Some(Draw::new(self.player_id, card)),
+            Some(card) => Some(PlayerMove::new(self.player_id, card)),
             None => None,
         }
     }
