@@ -18,6 +18,15 @@ impl Player {
         }
     }
 
+    #[cfg(test)]
+    #[allow(dead_code)]
+    pub(crate) fn new_with_cards(player_id: u8, cards: Vec<Card>) -> Self {
+        Player {
+            player_id,
+            hand: VecDeque::from(cards),
+        }
+    }
+
     pub(crate) fn add_card(&mut self, card: Card) {
         self.hand.push_back(card)
     }

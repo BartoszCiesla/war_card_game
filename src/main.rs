@@ -6,27 +6,22 @@ mod player_move;
 mod rank;
 mod unicode;
 
-use crate::color::Color;
 use crate::game::Game;
-use crate::rank::Rank;
-
-use enum_iterator::all;
-// use queues::Queue;
 
 fn main() {
-    let mut game = Game::new();
+    let mut game = Game::new(2);
+    let seed = rand::random::<u64>();
 
     println!("Starting game!");
-    println!("{game}",);
+    game.print_deck();
+    println!("Let's shuffle using seed {seed}");
+    game.shuffle(seed);
+    game.print_deck();
     println!("Let's deal!");
     game.deal();
-    println!("{game}");
-
-    for color in all::<Color>() {
-        print!("{color}");
-    }
-
-    for rank in all::<Rank>() {
-        print!("{rank}");
-    }
+    println!("Starting setup:");
+    game.print_players();
+    game.play();
+    println!("Game over!");
+    game.print_summary();
 }
