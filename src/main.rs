@@ -8,8 +8,6 @@ mod player_move;
 mod rank;
 mod unicode;
 
-// use crate::app::App;
-
 fn main() {
     let mut app = app::App::new();
 

@@ -4,29 +4,21 @@ use crate::game::Game;
 use clap::Parser;
 
 pub(crate) struct App {
-    args: Args,
     game: Game,
 }
 
 impl App {
     pub(crate) fn new() -> App {
         let args = Args::parse();
-        let game = Game::new(2);
+        let game = Game::new(2, args.get_seed());
 
-        App { args, game }
+        App { game }
     }
 
     pub(crate) fn run(&mut self) {
         println!("Starting game!");
         self.game.print_deck();
-        let seed = if let Some(seed) = self.args.get_seed() {
-            seed
-        } else {
-            rand::random::<u64>()
-        };
-
-        println!("Let's shuffle using seed {seed}");
-        self.game.shuffle(seed);
+        self.game.shuffle();
         self.game.print_deck();
         println!("Let's deal!");
         self.game.deal();

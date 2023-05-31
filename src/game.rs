@@ -12,6 +12,7 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub(crate) struct Game {
     deck: Vec<Card>,
+    seed: u64,
     players: HashMap<PlayerId, Player>,
     failed: Vec<(PlayerId, u32)>,
     round: u32,
@@ -19,7 +20,7 @@ pub(crate) struct Game {
 }
 
 impl Game {
-    pub(crate) fn new(players_count: u8) -> Game {
+    pub(crate) fn new(players_count: u8, seed: Option<u64>) -> Game {
         let ranks = all::<Rank>().collect::<Vec<_>>();
         let colors = all::<Color>().collect::<Vec<_>>();
 
@@ -27,10 +28,17 @@ impl Game {
             .map(|id| (id, Player::new(id)))
             .collect();
 
+        let seed = if let Some(seed) = seed {
+            seed
+        } else {
+            rand::random::<u64>()
+        };
+
         Game {
             deck: iproduct!(ranks.into_iter(), colors.into_iter())
                 .map(|(r, c)| Card::new(r, c))
                 .collect::<Vec<_>>(),
+            seed,
             players,
             failed: vec![],
             round: 0,
@@ -52,6 +60,7 @@ impl Game {
 
         Game {
             deck: Vec::new(),
+            seed: 0,
             players,
             failed: Vec::new(),
             round: 0,
@@ -59,9 +68,10 @@ impl Game {
         }
     }
 
-    pub(crate) fn shuffle(&mut self, seed: u64) {
-        let mut r = StdRng::seed_from_u64(seed);
+    pub(crate) fn shuffle(&mut self) {
+        let mut r = StdRng::seed_from_u64(self.seed);
 
+        println!("Let's shuffle using seed {}", self.seed);
         self.deck.shuffle(&mut r);
     }
 
