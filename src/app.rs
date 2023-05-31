@@ -16,16 +16,10 @@ impl App {
     }
 
     pub(crate) fn run(&mut self) {
-        println!("Starting game!");
-        self.game.print_deck();
-        self.game.shuffle();
-        self.game.print_deck();
-        println!("Let's deal!");
+        self.game.init();
         self.game.deal();
-        println!("Starting setup:");
-        self.game.print_players();
+        self.game.start();
         self.game.play();
-        println!("Game over!");
-        self.game.print_summary();
+        self.game.finish();
     }
 }

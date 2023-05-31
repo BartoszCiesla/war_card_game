@@ -68,7 +68,14 @@ impl Game {
         }
     }
 
-    pub(crate) fn shuffle(&mut self) {
+    pub(crate) fn init(&mut self) {
+        println!("Starting game!");
+        self.print_deck();
+        self.shuffle();
+        self.print_deck();
+    }
+
+    fn shuffle(&mut self) {
         let mut r = StdRng::seed_from_u64(self.seed);
 
         println!("Let's shuffle using seed {}", self.seed);
@@ -76,6 +83,7 @@ impl Game {
     }
 
     pub(crate) fn deal(&mut self) {
+        println!("Let's deal!");
         let quantity = self.deck.len() / self.players.len() + 1;
         for _ in 0..quantity {
             for (_, player) in self.players.iter_mut() {
@@ -88,21 +96,26 @@ impl Game {
         }
     }
 
+    pub(crate) fn start(&self) {
+        println!("Starting setup:");
+        self.print_players();
+    }
+
     pub(crate) fn is_end(&self) -> bool {
         self.players.len() == 1
     }
 
-    pub(crate) fn print_deck(&self) {
+    fn print_deck(&self) {
         print!("Deck: ");
         self.deck.iter().for_each(|card| print!("{card} "));
         println!();
     }
 
-    pub(crate) fn print_players(&self) {
+    fn print_players(&self) {
         self.players.iter().for_each(|(_, hand)| println!("{hand}"));
     }
 
-    pub(crate) fn print_summary(&self) {
+    fn print_summary(&self) {
         self.players
             .iter()
             .for_each(|(id, _)| println!("Player {} won in round {}", id, self.round));
@@ -194,6 +207,11 @@ impl Game {
         cards.sort_by(|a, b| b.cmp_by_card(a));
 
         cards
+    }
+
+    pub(crate) fn finish(&self) {
+        println!("Game over!");
+        self.print_summary();
     }
 }
 
