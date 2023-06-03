@@ -1,3 +1,4 @@
+use crate::args::Output;
 use crate::card::Card;
 use crate::color::Color;
 use crate::player::Player;
@@ -11,6 +12,7 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub(crate) struct Game {
+    output: Output,
     deck: Vec<Card>,
     seed: u64,
     players: HashMap<PlayerId, Player>,
@@ -20,7 +22,7 @@ pub(crate) struct Game {
 }
 
 impl Game {
-    pub(crate) fn new(players_count: u8, seed: Option<u64>) -> Game {
+    pub(crate) fn new(players_count: u8, seed: Option<u64>, output: Output) -> Game {
         let ranks = all::<Rank>().collect::<Vec<_>>();
         let colors = all::<Color>().collect::<Vec<_>>();
 
@@ -35,6 +37,7 @@ impl Game {
         };
 
         Game {
+            output,
             deck: iproduct!(ranks.into_iter(), colors.into_iter())
                 .map(|(r, c)| Card::new(r, c))
                 .collect::<Vec<_>>(),
@@ -59,6 +62,7 @@ impl Game {
             .collect();
 
         Game {
+            output: Output::default(),
             deck: Vec::new(),
             seed: 0,
             players,
@@ -69,21 +73,30 @@ impl Game {
     }
 
     pub(crate) fn init(&mut self) {
-        println!("Starting game!");
-        self.print_deck();
+        if self.output >= Output::Normal {
+            println!("Starting game!");
+            self.print_deck();
+        }
         self.shuffle();
-        self.print_deck();
+        if self.output >= Output::Quiet {
+            self.print_deck();
+            println!();
+        }
     }
 
     fn shuffle(&mut self) {
         let mut r = StdRng::seed_from_u64(self.seed);
 
-        println!("Let's shuffle using seed {}", self.seed);
+        if self.output >= Output::Quiet {
+            println!("Shuffling deck with seed {}", self.seed);
+        }
         self.deck.shuffle(&mut r);
     }
 
     pub(crate) fn deal(&mut self) {
-        println!("Let's deal!");
+        if self.output >= Output::Normal {
+            println!("Let's deal!");
+        }
         let quantity = self.deck.len() / self.players.len() + 1;
         for _ in 0..quantity {
             for (_, player) in self.players.iter_mut() {
@@ -97,8 +110,11 @@ impl Game {
     }
 
     pub(crate) fn start(&self) {
-        println!("Starting setup:");
-        self.print_players();
+        if self.output >= Output::Normal {
+            println!("Starting setup:");
+            self.print_players();
+            println!();
+        }
     }
 
     pub(crate) fn is_end(&self) -> bool {
@@ -115,30 +131,25 @@ impl Game {
         self.players.iter().for_each(|(_, hand)| println!("{hand}"));
     }
 
-    fn print_summary(&self) {
-        self.players
-            .iter()
-            .for_each(|(id, _)| println!("Player {} won in round {}", id, self.round));
-        self.failed
-            .iter()
-            .for_each(|(player, round)| println!("Player {} failed in {}", player, round));
-        println!("Longest war: {}", self.longest_war);
-    }
-
     pub(crate) fn play(&mut self) {
         while !self.is_end() {
+            self.round += 1;
+            if self.output >= Output::Verbose {
+                println!("Round {}", self.round);
+                self.print_players();
+            }
             self.play_round();
-            println!("Round {}", self.round);
-            self.print_players();
         }
     }
 
     fn print_war(&self, players: &[PlayerId], final_cards: &Vec<PlayerMove>) {
-        for player in players {
-            print!("P{} \u{1F0A0}  ", player);
+        if self.output >= Output::Verbose {
+            for player in players {
+                print!("P{} \u{1F0A0}  ", player);
+            }
+            println!();
+            self.print_player_moves(final_cards);
         }
-        println!();
-        print_player_moves(final_cards);
     }
 
     fn play_round(&mut self) {
@@ -147,7 +158,7 @@ impl Game {
         let mut winner = cards[0].player_id;
         let mut war_length = 0;
 
-        print_player_moves(&cards);
+        self.print_player_moves(&cards);
 
         while let Some(players_in_war) = is_war(&cards) {
             result.append(&mut cards);
@@ -163,7 +174,10 @@ impl Game {
             self.longest_war = war_length;
         }
 
-        println!("Winner {winner}");
+        if self.output >= Output::Verbose {
+            println!("Round {} winner is Player {}", self.round, winner);
+            println!();
+        }
         result.append(&mut cards);
 
         for card_move in result {
@@ -184,8 +198,6 @@ impl Game {
             self.players.remove(&id);
             self.failed.push((id, self.round))
         }
-
-        self.round += 1;
     }
 
     fn get_players_moves(&mut self) -> Vec<PlayerMove> {
@@ -210,16 +222,42 @@ impl Game {
     }
 
     pub(crate) fn finish(&self) {
-        println!("Game over!");
-        self.print_summary();
-    }
-}
+        if self.output >= Output::Normal {
+            println!("Game over!");
+        }
+        if self.output >= Output::Quiet {
+            self.players
+                .iter()
+                .for_each(|(id, _)| println!("Player {} won in round {}", id, self.round));
+            self.failed
+                .iter()
+                .for_each(|(player, round)| println!("Player {} lost in {}", player, round));
+        }
+        if self.output >= Output::Normal {
+            println!("Longest war: {}", self.longest_war);
+        }
 
-fn print_player_moves(cards: &Vec<PlayerMove>) {
-    for card in cards {
-        print!("P{} {} ", card.player_id, card.card);
+        if self.output == Output::OneLine {
+            self.players.iter().for_each(|(id, _)| {
+                println!(
+                    "Players: {}, seed: {}, winner: Player {}, winning round: {}",
+                    self.players.len() + self.failed.len(),
+                    self.seed,
+                    id,
+                    self.round
+                )
+            });
+        }
     }
-    println!();
+
+    fn print_player_moves(&self, cards: &Vec<PlayerMove>) {
+        if self.output >= Output::Verbose {
+            for card in cards {
+                print!("P{} {} ", card.player_id, card.card);
+            }
+            println!();
+        }
+    }
 }
 
 fn is_war(table: &Vec<PlayerMove>) -> Option<Vec<PlayerId>> {

@@ -10,7 +10,7 @@ pub(crate) struct App {
 impl App {
     pub(crate) fn new() -> App {
         let args = Args::parse();
-        let game = Game::new(2, args.get_seed());
+        let game = Game::new(2, args.get_seed(), args.get_output());
 
         App { game }
     }
