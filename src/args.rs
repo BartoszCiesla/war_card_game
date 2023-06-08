@@ -1,17 +1,12 @@
 use clap::{Parser, ValueEnum};
 
-#[derive(ValueEnum, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
+#[derive(Default, ValueEnum, Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub(crate) enum Output {
     OneLine,
     Quiet,
+    #[default]
     Normal,
     Verbose,
-}
-
-impl Default for Output {
-    fn default() -> Self {
-        Output::Normal
-    }
 }
 
 #[derive(Parser)]
