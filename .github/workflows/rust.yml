@@ -14,9 +14,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Install cargo-audit
         run: cargo install cargo-audit
       - name: Build
@@ -29,3 +29,44 @@ jobs:
         run: cargo fmt -- --check
       - name: Audit
         run: cargo audit
+
+  tag:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check if only Cargo.toml and Cargo.lock are changed
+        uses: tj-actions/changed-files@v36.1.0
+        id: check_changes
+        with:
+          files: |
+            Cargo.toml
+            Cargo.lock
+
+      - name: Extract version from Cargo.toml
+        if: ${{ steps.check_changes.outputs.all_modified_files == 'Cargo.toml Cargo.lock' }}
+        id: extract_version
+        run: |
+          version=$(cargo metadata --format-version 1 | jq -r '.packages[0].version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "::notice ::Version from Cargo.toml $version"
+
+      - name: Check if version is a Git tag
+        uses: mukunku/tag-exists-action@v1.2.0
+        if: ${{ steps.check_changes.outputs.all_modified_files == 'Cargo.toml Cargo.lock' }}
+        id: check_git_tag
+        with:
+          tag: 'v${{ steps.extract_version.outputs.version }}'
+
+      - name: Create tag
+        if: ${{ steps.check_git_tag.outputs.exists == 'false' }}
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag -a v${{ steps.extract_version.outputs.version }} -m "v${{ steps.extract_version.outputs.version }}"
+          git push origin v${{ steps.extract_version.outputs.version }}
+          echo "::notice ::Created v${{ steps.extract_version.outputs.version }} tag"
