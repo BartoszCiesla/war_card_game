@@ -51,7 +51,7 @@ jobs:
         if: ${{ steps.check_changes.outputs.all_modified_files == 'Cargo.toml Cargo.lock' }}
         id: extract_version
         run: |
-          version=$(cargo metadata --format-version 1 | jq -r '.packages[0].version')
+          version=$(cargo pkgid | cut -d# -f2 | cut -d: -f2)
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "::notice ::Version from Cargo.toml $version"
 
