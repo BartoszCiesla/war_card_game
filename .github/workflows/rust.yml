@@ -69,10 +69,14 @@ jobs:
           git push origin v${{ steps.extract_version.outputs.version }}
           echo "::notice ::Created v${{ steps.extract_version.outputs.version }} tag"
           echo "created=true" >> $GITHUB_OUTPUT
+      - name: Get Repository Name
+        id: repository
+        run: echo "name=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
 
     outputs:
       created: ${{ steps.tagging.outputs.created }}
       version: ${{ steps.extract_version.outputs.version }}
+      executable: ${{ steps.repository.outputs.name }}
 
   release:
     if: ${{ needs.tag.outputs.created == 'true'}}
@@ -89,12 +93,12 @@ jobs:
           - name: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            exec: target/x86_64-unknown-linux-musl/release/github-ci-testing
+            exec: target/x86_64-unknown-linux-musl/release/${{ needs.tag.outputs.executable }}
             file-name: release
           - name: windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
-            exec: target/x86_64-pc-windows-msvc/release/github-ci-testing.exe
+            exec: target/x86_64-pc-windows-msvc/release/${{ needs.tag.outputs.executable }}.exe
             file-name: release
 
     steps:
