@@ -75,7 +75,7 @@ jobs:
 
     outputs:
       created: ${{ steps.tagging.outputs.created }}
-      version: ${{ steps.extract_version.outputs.version }}
+      version: v${{ steps.extract_version.outputs.version }}
       executable: ${{ steps.repository.outputs.name }}
 
   release:
