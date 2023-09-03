@@ -48,6 +48,27 @@ Player 2 lost in 146
 Longest war: 2
 ```
 
+User can select multiple seeds by using seed range option
+
+```bash
+-r, --range <RANGE>    Range (start-end) of seeds for deck shuffling
+```
+
+where `RANGE` is in form of `start-end` and `start` < `end`. For seed range default (and only supported) output mode is `one-line` output level
+
+```bash
+Players: 2, seed: 0, winner: Player 2, winning round: 118
+Players: 2, seed: 1, winner: Player 2, winning round: 176
+Players: 2, seed: 2, winner: Player 2, winning round: 568
+Players: 2, seed: 3, winner: Player 1, winning round: 654
+Players: 2, seed: 4, winner: Player 2, winning round: 164
+Players: 2, seed: 5, winner: Player 2, winning round: 126
+Players: 2, seed: 6, winner: Player 2, winning round: 230
+Players: 2, seed: 7, winner: Player 2, winning round: 116
+Players: 2, seed: 8, winner: Player 1, winning round: 516
+Players: 2, seed: 9, winner: Player 1, winning round: 380
+```
+
 User can select output level either by using output option
 
 ```bash
