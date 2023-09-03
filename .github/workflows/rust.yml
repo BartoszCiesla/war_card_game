@@ -143,3 +143,22 @@ jobs:
           files: ./release/*
       - name: Print message
         run: echo "::notice ::Created ${{ needs.release.outputs.version }} release"
+
+  cargp-publish:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1.0.6
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - run: cargo publish --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
