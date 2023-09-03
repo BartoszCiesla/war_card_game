@@ -51,8 +51,9 @@ impl Player {
 impl Display for Player {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "P{}: ", self.player_id)?;
-        self.hand.iter().fold(Ok(()), |result, card| {
-            result.and_then(|_| write!(f, "{card} "))
+        self.hand.iter().try_fold((), |_, card| {
+            write!(f, "{card} ")?;
+            Ok(())
         })
     }
 }

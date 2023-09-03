@@ -6,6 +6,7 @@ mod game;
 mod player;
 mod player_move;
 mod rank;
+mod seed;
 mod unicode;
 
 fn main() {
