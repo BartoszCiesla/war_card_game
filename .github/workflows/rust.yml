@@ -149,7 +149,7 @@ jobs:
       - name: Print message
         run: echo "::notice ::Created ${{ needs.release.outputs.version }} release"
 
-  cargp-publish:
+  cargo-publish:
     needs: publish
     runs-on: ubuntu-latest
 
