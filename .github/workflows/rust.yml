@@ -4,34 +4,16 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Install cargo-audit
-        run: cargo install cargo-audit
-      - name: Build
-        run: cargo build --verbose
-      - name: Test
-        run: cargo test --verbose
-      - name: Clippy
-        run: cargo clippy --verbose -- -D warnings
-      - name: Check Formatting
-        run: cargo fmt -- --check
-      - name: Audit
-        run: cargo audit
+  trigger:
+    uses: ./.github/workflows/build.yml
 
   check_tag:
-    needs: build
+    needs: trigger
     runs-on: ubuntu-latest
 
     steps:
