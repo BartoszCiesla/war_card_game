@@ -236,6 +236,9 @@ impl Game {
         if self.output >= Output::Normal {
             println!("Longest war: {}", self.longest_war);
         }
+        if self.output >= Output::Verbose {
+            self.print_players();
+        }
 
         if self.output == Output::OneLine {
             self.players.iter().for_each(|(id, _)| {
