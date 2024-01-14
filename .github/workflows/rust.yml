@@ -28,7 +28,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "::notice ::Version from Cargo.toml $version"
       - name: Check if version is a Git tag
-        uses: mukunku/tag-exists-action@v1.2.0
+        uses: mukunku/tag-exists-action@v1.5.0
         id: check_git_tag
         with:
           tag: '${{ steps.extract_version.outputs.version }}'
