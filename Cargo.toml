@@ -14,7 +14,7 @@ categories = ["games", "simulation"]
 [dependencies]
 clap = { version = "4.2.2", features = ["derive"] }
 enum-iterator = "1.3.0"
-itertools = "0.11.0"
+itertools = "0.12.0"
 rand = "0.8.5"
 
 [profile.release]
