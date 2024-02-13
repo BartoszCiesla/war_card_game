@@ -352,10 +352,7 @@ mod test {
     fn test_is_war_one_item() {
         assert_eq!(
             None,
-            is_war(&[PlayerMove::new(
-                1,
-                Card::new(Rank::King, Color::Spades)
-            )])
+            is_war(&[PlayerMove::new(1, Card::new(Rank::King, Color::Spades))])
         );
     }
 
