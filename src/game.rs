@@ -263,7 +263,7 @@ impl Game {
     }
 }
 
-fn is_war(table: &Vec<PlayerMove>) -> Option<Vec<PlayerId>> {
+fn is_war(table: &[PlayerMove]) -> Option<Vec<PlayerId>> {
     if table.len() > 1 {
         let first_card = &table[0].card;
         let first_player = table[0].player_id;
@@ -315,7 +315,7 @@ mod test {
     fn test_is_war() {
         assert_eq!(
             Some(vec![1, 3, 4]),
-            is_war(&vec![
+            is_war(&[
                 PlayerMove::new(1, Card::new(Rank::Ace, Color::Spades)),
                 PlayerMove::new(3, Card::new(Rank::Ace, Color::Diamonds)),
                 PlayerMove::new(4, Card::new(Rank::Ace, Color::Hearts)),
@@ -328,7 +328,7 @@ mod test {
     fn test_is_war_no_war() {
         assert_eq!(
             None,
-            is_war(&vec![
+            is_war(&[
                 PlayerMove::new(3, Card::new(Rank::Ace, Color::Diamonds)),
                 PlayerMove::new(1, Card::new(Rank::Two, Color::Clubs)),
                 PlayerMove::new(2, Card::new(Rank::Ten, Color::Hearts)),
@@ -340,7 +340,7 @@ mod test {
     fn test_is_war_not_first() {
         assert_eq!(
             None,
-            is_war(&vec![
+            is_war(&[
                 PlayerMove::new(3, Card::new(Rank::Ace, Color::Diamonds)),
                 PlayerMove::new(1, Card::new(Rank::Ten, Color::Clubs)),
                 PlayerMove::new(2, Card::new(Rank::Ten, Color::Hearts)),
@@ -352,7 +352,7 @@ mod test {
     fn test_is_war_one_item() {
         assert_eq!(
             None,
-            is_war(&vec![PlayerMove::new(
+            is_war(&[PlayerMove::new(
                 1,
                 Card::new(Rank::King, Color::Spades)
             )])
@@ -361,6 +361,6 @@ mod test {
 
     #[test]
     fn test_is_war_empty_table() {
-        assert_eq!(None, is_war(&Vec::new()));
+        assert_eq!(None, is_war(&[]));
     }
 }
