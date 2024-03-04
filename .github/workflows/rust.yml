@@ -120,7 +120,7 @@ jobs:
 
     steps:
       - name: Download files
-        uses: actions/download-artifact@v4.1.2
+        uses: actions/download-artifact@v4.1.4
       - run: find
       - name: Release
         uses: softprops/action-gh-release@v1
