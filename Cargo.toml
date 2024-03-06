@@ -12,7 +12,7 @@ keywords = ["game", "simulation", "cards", "war", "deck"]
 categories = ["games", "simulation"]
 
 [dependencies]
-clap = { version = "4.5.0", features = ["derive"] }
+clap = { version = "4.5.2", features = ["derive"] }
 enum-iterator = "2.0.0"
 itertools = "0.12.1"
 rand = "0.8.5"
