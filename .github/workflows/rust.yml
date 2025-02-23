@@ -145,7 +145,7 @@ jobs:
           chmod 600 ~/.minisign/minisign.key
           ls -l ~/.minisign/minisign.key
           for file in ./artifacts-*/*.tgz ./artifacts-*/*.zip; do
-            minisign -S -W -t "$GITHUB_REPOSITORY@$GITHUB_SHA $(date +'%Y-%m-%d_%H-%M-%S')" -x $file.sig -m $file
+            minisign -S -W -t "$GITHUB_REPOSITORY@$GITHUB_SHA $(date +'%Y-%m-%d %H-%M-%S') $GITHUB_RUN_ID" -x $file.sig -m $file
           done
           ls -l ./artifacts-*/*.sig
           rm -f ~/.minisign/minisign.key
