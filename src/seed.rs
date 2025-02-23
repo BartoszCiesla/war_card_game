@@ -73,7 +73,7 @@ impl<'a> IntoIterator for &'a SeedRange {
     }
 }
 
-impl<'a> Iterator for SeedRangeIterator<'a> {
+impl Iterator for SeedRangeIterator<'_> {
     type Item = u64;
     fn next(&mut self) -> Option<Self::Item> {
         if self.index > self.range.end {

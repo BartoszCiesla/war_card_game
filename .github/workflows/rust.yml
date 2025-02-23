@@ -73,20 +73,20 @@ jobs:
     strategy:
       matrix:
         name: [
-            linux
-            ,windows
+            linux,
+            windows
         ]
         include:
           - name: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
             exec: target/x86_64-unknown-linux-musl/release/${{ needs.tag.outputs.executable }}
-            file-name: release
+            archive: x86_64-unknown-linux-musl.tgz
           - name: windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
             exec: target/x86_64-pc-windows-msvc/release/${{ needs.tag.outputs.executable }}.exe
-            file-name: release
+            archive: x86_64-pc-windows-msvc.zip
 
     steps:
       - uses: actions/checkout@v4
@@ -97,17 +97,30 @@ jobs:
           toolchain: stable
           override: true
           target: ${{ matrix.target }}
-      - name: Build
+      - name: Build ${{ matrix.target }} executable
         id: build
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --target ${{ matrix.target }}
-      - name: Upload file
-        uses: actions/upload-artifact@v4.4.0
+      - name: Collect ${{ matrix.target }} executable
+        run: |
+          cp ${{ matrix.exec }} .
+      - name: Create ${{ matrix.target }} artifact
+        run: |
+          tar cvfz ${{ needs.tag.outputs.executable }}-${{ matrix.archive }} ${{ needs.tag.outputs.executable }}
+        if: ${{ matrix.platform.os == 'ubuntu-latest' }}
+      - name: Create ${{ matrix.platform.file }} artifact
+        uses: vimtor/action-zip@v1.2
         with:
-          name: ${{ matrix.file-name }}
-          path: ${{ matrix.exec }}
+          files: ${{ needs.tag.outputs.executable }}
+          dest: ${{ needs.tag.outputs.executable }}-${{ matrix.archive }}
+        if: ${{ matrix.platform.os == 'windows-latest' }}
+      - name: Upload ${{ matrix.platform.file }} artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.target }}
+          path: ${{ needs.tag.outputs.executable }}-${{ matrix.archive }}
       - name: Print message
         run: echo "::notice ::Created binary for ${{ matrix.target }}"
 
@@ -127,7 +140,9 @@ jobs:
         with:
           name: ${{ needs.release.outputs.version }}
           tag_name: ${{ needs.release.outputs.version }}
-          files: ./release/*
+          files: |
+            ./artifacts-*/*.tgz
+            ./artifacts-*/*.zip
       - name: Print message
         run: echo "::notice ::Created ${{ needs.release.outputs.version }} release"
 
