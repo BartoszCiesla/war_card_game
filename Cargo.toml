@@ -1,6 +1,6 @@
 [package]
 name = "war_card_game"
-version = "0.3.4"
+version = "0.3.5"
 edition = "2021"
 authors = ["Bartosz Cieśla <bartosz.ciesla@gmail.com>"]
 license = "MIT"

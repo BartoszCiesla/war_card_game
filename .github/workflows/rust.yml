@@ -147,6 +147,7 @@ jobs:
           for file in ./artifacts-*/*.tgz ./artifacts-*/*.zip; do
             minisign -S -W -x $file.sig -m $file
           done
+          ls -l ./artifacts-*/*.sig
           rm -f ~/.minisign/minisign.key
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -155,7 +156,9 @@ jobs:
           tag_name: ${{ needs.release.outputs.version }}
           files: |
             ./artifacts-*/*.tgz
+            ./artifacts-*/*.tgz.sig
             ./artifacts-*/*.zip
+            ./artifacts-*/*.zip.sig
       - name: Print message
         run: echo "::notice ::Created ${{ needs.release.outputs.version }} release"
 
