@@ -7,6 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
 
 jobs:
   trigger:
@@ -132,9 +133,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install tools on Linux
+        run: sudo apt-get update --yes && sudo apt-get install --yes minisign
       - name: Download files
         uses: actions/download-artifact@v4
       - run: find
+      - name: Sign packages
+        run: |
+          echo "::add-mask::${{ env.MINISIGN_KEY }}"
+          mkdir -p ~/.minisign && echo "${{ env.MINISIGN_KEY }}" > ~/.minisign/minisign.key
+          chmod 600 ~/.minisign/minisign.key
+          ls -l ~/.minisign/minisign.key
+          for file in ./artifacts-*/*.tgz ./artifacts-*/*.zip; do
+            minisign -S -W -x $file.sig -m $file
+          done
+          rm -f ~/.minisign/minisign.key
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
