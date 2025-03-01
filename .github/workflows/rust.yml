@@ -112,10 +112,7 @@ jobs:
           tar cvfz ${{ needs.tag.outputs.executable }}-${{ matrix.archive }} ${{ needs.tag.outputs.executable }}
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - name: Create ${{ matrix.platform.file }} artifact
-        uses: vimtor/action-zip@v1
-        with:
-          files: ${{ needs.tag.outputs.executable }}
-          dest: ${{ needs.tag.outputs.executable }}-${{ matrix.archive }}
+        run: Compress-Archive -Path ${{ needs.tag.outputs.executable }}.exe -Destination ${{ needs.tag.outputs.executable }}-${{ matrix.archive }}
         if: ${{ matrix.os == 'windows-latest' }}
       - name: Upload ${{ matrix.platform.file }} artifact
         uses: actions/upload-artifact@v4
