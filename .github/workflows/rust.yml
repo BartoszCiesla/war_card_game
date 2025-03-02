@@ -7,7 +7,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  MINISIGN_KEY: ${{ secrets.MINISIGN_KEY }}
 
 jobs:
   trigger:
@@ -130,28 +129,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install tools on Linux
-        run: sudo apt-get update --yes && sudo apt-get install --yes minisign
+      - uses: actions/checkout@v4
+      - uses: cargo-bins/cargo-binstall@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install binaries required
+        run: cargo binstall -y --force rsign2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download files
         uses: actions/download-artifact@v4
-      - run: find
-      - name: Sign packages
+      - run: find ./artifacts-* -type f \( -name "*.tgz" -o -name "*.zip" \)
+      - name: Sign artifacts
         run: |
-          echo "::add-mask::${{ env.MINISIGN_KEY }}"
-          mkdir -p ~/.minisign && echo "${{ env.MINISIGN_KEY }}" > ~/.minisign/minisign.key
-          chmod 600 ~/.minisign/minisign.key
-          ls -l ~/.minisign/minisign.key
-          for file in ./artifacts-*/*.tgz ./artifacts-*/*.zip; do
-            minisign -S -W -t "$GITHUB_REPOSITORY@$GITHUB_SHA $(date +'%Y-%m-%d %H-%M-%S') $GITHUB_RUN_ID" -x $file.sig -m $file
-          done
-          ls -l ./artifacts-*/*.sig
-          rm -f ~/.minisign/minisign.key
+          ls -l
+          .github/scripts/sign.sh Cargo.toml "$(find ./artifacts-* -type f \( -name "*.tgz" -o -name "*.zip" \))"
+          ls -l ./artifacts-*/*
+          ls -l minisign.pub
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ needs.release.outputs.version }}
           tag_name: ${{ needs.release.outputs.version }}
           files: |
+            ./minisign.pub
             ./artifacts-*/*.tgz
             ./artifacts-*/*.tgz.sig
             ./artifacts-*/*.zip

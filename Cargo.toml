@@ -1,6 +1,6 @@
 [package]
 name = "war_card_game"
-version = "0.3.7"
+version = "0.3.8"
 edition = "2021"
 authors = ["Bartosz Cieśla <bartosz.ciesla@gmail.com>"]
 license = "MIT"
@@ -25,7 +25,3 @@ lto = true
 [package.metadata.binstall]
 pkg-url = "{ repo }/releases/download/{ version }/{ name }-{ target }{ archive-suffix }"
 bin-dir = "{ bin }{ binary-ext }"
-
-[package.metadata.binstall.signing]
-algorithm = "minisign"
-pubkey = "RWRAdDA6DASFAGd5opsHrzD1Kbwe8hI2d+H6izbqAADQI7JluTlNOPIv"
