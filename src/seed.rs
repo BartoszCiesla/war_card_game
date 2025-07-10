@@ -33,8 +33,7 @@ impl FromStr for SeedRange {
         let parts: Vec<&str> = s.split('-').collect();
         if parts.len() != 2 {
             return Err(format!(
-                "Range format error for {}, expected format: start-end",
-                s
+                "Range format error for {s}, expected format: start-end"
             ));
         }
 
@@ -49,8 +48,7 @@ impl FromStr for SeedRange {
 
         if start > end {
             return Err(format!(
-                "Range start value {} is greater than end value {}",
-                start, end
+                "Range start value {start} is greater than end value {end}"
             ));
         }
 

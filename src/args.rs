@@ -112,7 +112,7 @@ mod test {
         assert!(Args::try_parse_from(arg_vec).unwrap().get_seed().is_none());
 
         let seed: u64 = 12345;
-        let seed_str = format!("-s{}", seed);
+        let seed_str = format!("-s{seed}");
         let arg_vec: Vec<&str> = vec![env!("CARGO_PKG_NAME"), seed_str.as_str()];
         let seed_range = Args::try_parse_from(arg_vec).unwrap().get_seed().unwrap();
         assert_eq!(seed_range.len(), 1);
@@ -121,7 +121,7 @@ mod test {
 
         let seed_start: u64 = 876555;
         let seed_end: u64 = 99879876;
-        let seed_str = format!("-r{}-{}", seed_start, seed_end);
+        let seed_str = format!("-r{seed_start}-{seed_end}");
         let arg_vec: Vec<&str> = vec![env!("CARGO_PKG_NAME"), seed_str.as_str()];
         let seed_range = Args::try_parse_from(arg_vec).unwrap().get_seed().unwrap();
         assert_eq!(seed_range.len(), seed_end - seed_start + 1);
