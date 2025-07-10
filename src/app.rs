@@ -18,7 +18,7 @@ impl App {
                 let mut cmd = Args::command();
                 cmd.error(
                     ErrorKind::ArgumentConflict,
-                    format!("Can't use {} output level with seed range.", output),
+                    format!("Can't use {output} output level with seed range."),
                 )
                 .exit();
             }

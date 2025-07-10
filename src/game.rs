@@ -145,7 +145,7 @@ impl Game {
     fn print_war(&self, players: &[PlayerId], final_cards: &Vec<PlayerMove>) {
         if self.output >= Output::Verbose {
             for player in players {
-                print!("P{} \u{1F0A0}  ", player);
+                print!("P{player} \u{1F0A0}  ");
             }
             println!();
             self.print_player_moves(final_cards);
@@ -231,7 +231,7 @@ impl Game {
                 .for_each(|(id, _)| println!("Player {} won in round {}", id, self.round));
             self.failed
                 .iter()
-                .for_each(|(player, round)| println!("Player {} lost in {}", player, round));
+                .for_each(|(player, round)| println!("Player {player} lost in {round}"));
         }
         if self.output >= Output::Normal {
             println!("Longest war: {}", self.longest_war);

@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Version check
+        run: cargo --version
       - name: Install cargo-audit
         run: cargo install cargo-audit
       - name: Build
