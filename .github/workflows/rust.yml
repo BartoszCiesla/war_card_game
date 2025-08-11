@@ -138,7 +138,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
       - run: find ./artifacts-* -type f \( -name "*.tgz" -o -name "*.zip" \)
       - name: Sign artifacts
         run: |
