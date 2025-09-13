@@ -209,10 +209,10 @@ impl Game {
         let mut cards: Vec<PlayerMove> = Vec::new();
 
         for id in players_id.iter() {
-            if let Some(player) = self.players.get_mut(id) {
-                if let Some(player_move) = player.get_card() {
-                    cards.push(player_move)
-                }
+            if let Some(player) = self.players.get_mut(id)
+                && let Some(player_move) = player.get_card()
+            {
+                cards.push(player_move)
             }
         }
 
